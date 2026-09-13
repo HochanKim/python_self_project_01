@@ -1,4 +1,24 @@
-import pandas as pd
+import pandas as pd  # pandas 가져오기 (데이터 불러오기, 계산 등)
+import matplotlib.pyplot as plt  # matplotlib.pyplot 가져오기 (그래프, 그림과 같은 인터페이스 등)
+import matplotlib.font_manager as fm  # 그래프에 노출할 폰트 설정
+
+# 폰트 파일 경로
+font_path = "../fonts/NanumGothic-Regular.ttf"
+
+# 폰트 파일을 'matplotlib' 모듈에 등록하기 (addfont())
+fm.fontManager.addfont(font_path)
+
+# 그래프에 사용할 폰트 설정 (font 변수에 경로 값 담기)
+font = fm.FontProperties(fname=font_path)
+
+# 등록된 폰트를 전체 그래프에 적용
+plt.rcParams["font.family"] = font.get_name()
+# 음수('-') 기호 깨짐 방지
+plt.rcParams["axes.unicode_minus"] = False
+
+# ===================================================
+# 01. 데이터 준비 및 가공
+# ===================================================
 
 # 데이터 파일 불러오기
 df = pd.read_csv("../data/Faults.NNA", sep=r"\s+", header=None)
@@ -65,4 +85,94 @@ fault_count = df[fault_columns].sum(axis=1)  # 결함 데이터 열(axis=1)들�
 df["fault_type"] = df[fault_columns].idxmax(
     axis=1
 )  # idxmax(): 가장 큰 값을 가지고 있는 컬럼의 이름을 찾아주는 기능
-print(df[["fault_type"]].head(10))
+# print(df["fault_type"])
+# print(df[fault_columns])
+# print(df.shape) # (1941, 35): 열 1개 증가 (fault_type)
+
+# 각 결함 유형이 몇 개씩 존재하는가?
+# => 각 결함 발생 건수
+fault_cnts = df["fault_type"].value_counts()
+# print(df["fault_type"].value_counts())
+# # 총 개수 대조하기 (1941 개)
+# print(df["fault_type"].value_counts().sum())  # 1941
+
+
+# ===================================================
+# 02. 데이터 분석 - 철판 결함 유형별 발생 현황
+# ===================================================
+
+# 각 결함 비율
+fault_ratio = (fault_cnts / len(df)) * 100
+# 소수점 절삭 (둘째자리)
+fault_ratio = fault_ratio.round(2)
+# print(fault_ratio.round(2))
+
+# 결함 데이터 프레임
+fault_summary = pd.DataFrame(
+    {
+        "fault_type": fault_cnts.index,
+        "count": fault_cnts.values,
+        "ratio": fault_ratio.values,
+    }
+)
+# 생성한 결함 df 확인
+# print(fault_summary)
+
+# 결함 df를 csv 파일로 내보내기
+fault_summary.to_csv("../data/fault_summary.csv", index=False, encoding="utf-8-sig")
+
+# ===================================================
+# 03. 결함 데이터의 시각화 - 그래프화
+# ===================================================
+
+# 그래프를 위한 bar 생성
+# => (가로축: 결함 종류(fault_type), 세로축: 발생 건수(count))
+plt.bar(fault_summary["fault_type"], fault_summary["count"])
+
+plt.title("Steel Plate Fault Distribution (철강 결함 분류)")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Count (결함 개수)")
+
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()  # 결과물 보여주기 (bar - 그래프)
+
+# fault_type별로 그룹을 만들어서 각 그룹의 Pixels_Areas(결함 면적) 평균 계산
+# => pd.groupby(): 특정 기준 데이터를 그룹으로 묶어서 다음 그룹별(특정 열의 데이터들) 계산을 수행
+grby_fy_pxl_a_avg = df.groupby("fault_type")["Pixels_Areas"].mean()
+# print(round(grby_fy_pxl_a_avg, 2))
+
+# 타입별 정보 불러오기 (개수, 평균, 중앙값 등등)
+grby_fy_pxl_a_decrib = df.groupby("fault_type")["Pixels_Areas"].describe()
+# print(grby_fy_pxl_a_decrib)
+#               count         mean       std     min      25%     50%      75%       max
+#       (결함 개수)(결함 평균)(표준편차)(최소값)(데이터 25% 기준)(중앙값)(데이터 75% 기준)(최대값)
+# fault_type
+# Bumps         402.0   238.465174   561.446680  25.0    78.25   120.5    197.50    8391.0
+# Dirtiness      55.0   363.490909   384.570221  52.0    84.50   145.0    581.50    2028.0
+# K_Scatch      391.0  7622.654731  9100.607359   2.0  3948.50  6281.0  10908.50  152655.0
+# Other_Faults  673.0   584.371471  2040.210152  15.0    81.00   146.0    308.00   37334.0
+# Pastry        158.0   561.620253  1314.772648  30.0   112.50   209.0    381.25   10914.0
+# Stains         72.0    19.916667    14.147861   6.0    13.50    16.5     18.00      86.0
+# Z_Scratch     190.0   506.594737  1039.794647  51.0    75.25   146.0    442.00    7579.0
+
+
+# ===================================================
+# 03. 결함 데이터의 시각화 - Box Plot
+# ===================================================
+
+# 결함 데이터 묶기 (group 리스트 생성)
+
+# 데이터 담는 빈 리스트
+groups = []
+
+# 중복 필터링 적용한 df["fault_type"] 데이터의 행값(실제 결함 7종류) 담기
+fault_types = df["fault_type"].unique()
+
+
+for fault in fault_types:
+    # print(fault)
+    groups.append(df[df["fault_type"] == fault]["Pixels_Areas"])
+plt.boxplot(groups)
+plt.show()  # 결과물 보여주기 (boxplot)
