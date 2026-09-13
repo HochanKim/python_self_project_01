@@ -127,7 +127,7 @@ fault_summary.to_csv("../data/fault_summary.csv", index=False, encoding="utf-8-s
 
 # 그래프를 위한 bar 생성
 # => (가로축: 결함 종류(fault_type), 세로축: 발생 건수(count))
-plt.bar(fault_summary["fault_type"], fault_summary["count"])
+plt.bar(fault_cnts.index, fault_summary["count"])
 
 plt.title("Steel Plate Fault Distribution (철강 결함 분류)")
 plt.xlabel("Fault Type (결함 종류)")
@@ -140,39 +140,128 @@ plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # fault_type별로 그룹을 만들어서 각 그룹의 Pixels_Areas(결함 면적) 평균 계산
 # => pd.groupby(): 특정 기준 데이터를 그룹으로 묶어서 다음 그룹별(특정 열의 데이터들) 계산을 수행
-grby_fy_pxl_a_avg = df.groupby("fault_type")["Pixels_Areas"].mean()
-# print(round(grby_fy_pxl_a_avg, 2))
+pxl_a_avg = df.groupby("fault_type")["Pixels_Areas"].mean()
+# print(round(pxl_a_avg, 2))
 
-# 타입별 정보 불러오기 (개수, 평균, 중앙값 등등)
-grby_fy_pxl_a_decrib = df.groupby("fault_type")["Pixels_Areas"].describe()
-# print(grby_fy_pxl_a_decrib)
-#               count         mean       std     min      25%     50%      75%       max
-#       (결함 개수)(결함 평균)(표준편차)(최소값)(데이터 25% 기준)(중앙값)(데이터 75% 기준)(최대값)
-# fault_type
-# Bumps         402.0   238.465174   561.446680  25.0    78.25   120.5    197.50    8391.0
-# Dirtiness      55.0   363.490909   384.570221  52.0    84.50   145.0    581.50    2028.0
-# K_Scatch      391.0  7622.654731  9100.607359   2.0  3948.50  6281.0  10908.50  152655.0
-# Other_Faults  673.0   584.371471  2040.210152  15.0    81.00   146.0    308.00   37334.0
-# Pastry        158.0   561.620253  1314.772648  30.0   112.50   209.0    381.25   10914.0
-# Stains         72.0    19.916667    14.147861   6.0    13.50    16.5     18.00      86.0
-# Z_Scratch     190.0   506.594737  1039.794647  51.0    75.25   146.0    442.00    7579.0
-
+# 타입별 정보 불러오기 (개수, 평균, 중앙값 등등) - Pixels_Areas
+pxl_a_decrib = df.groupby("fault_type")["Pixels_Areas"].describe()
+# print(pxl_a_decrib)
 
 # ===================================================
 # 03. 결함 데이터의 시각화 - Box Plot
 # ===================================================
 
+# 'Box Plot'으로 평균값에 큰 영향을 주는 이상값의 분포를 알아내기 위한 시각화 자료
 # 결함 데이터 묶기 (group 리스트 생성)
 
 # 데이터 담는 빈 리스트
 groups = []
 
-# 중복 필터링 적용한 df["fault_type"] 데이터의 행값(실제 결함 7종류) 담기
-fault_types = df["fault_type"].unique()
-
+# 결함 종류 (모든 Box Plot에 적용)
+fault_types = fault_cnts.index
 
 for fault in fault_types:
     # print(fault)
     groups.append(df[df["fault_type"] == fault]["Pixels_Areas"])
+plt.boxplot(groups)  # boxplot 적용
+plt.xticks(
+    # fault_type의 개수 체크
+    range(1, len(fault_types) + 1),
+    # 결함 종류
+    fault_types,
+    rotation=45,
+)
+plt.title("Fault Type별 Pixels_Areas 분포")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Pixels_Areas")
+plt.show()  # 결과물 보여주기 (boxplot)
+
+# ===================================================
+# 04. 데이터 분석 - 철판 결함 유형별 밝기 특성 확인
+# ===================================================
+
+# fault_type별로 그룹을 만들어서 각 그룹의 Sum_of_Luminosity(철판 결함 유형별 밝기) 평균 계산
+sol_a_avg = df.groupby("fault_type")["Sum_of_Luminosity"].mean()
+# x축 결함 종류들의 배치 순서 조정 (첫 번째 그래프와 통일)
+sol_a_avg = sol_a_avg.reindex(fault_cnts.index)
+
+# 타입별 정보 불러오기 (개수, 평균, 중앙값 등등) - Sum_of_Luminosity
+sol_a_decrib = df.groupby("fault_type")["Sum_of_Luminosity"].describe()
+
+# Sum_of_Luminosity의 bar graph
+# => (가로축: 결함 종류(fault_type), 세로축: 각 결함 평균 (Sum_of_Luminosity))
+plt.bar(sol_a_avg.index, sol_a_avg.values)
+
+plt.title("Sum_of_Luminosity (철판 결함 유형별 밝기)")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("AVG of SoL (각 결함 평균)")
+
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()  # 결과물 보여주기 (bar - 그래프)
+
+
+# Sum_of_Luminosity의 boxplot
+groups = []  # 리스트 초기화
+
+for fault in fault_types:
+    # print(fault)
+    groups.append(df[df["fault_type"] == fault]["Sum_of_Luminosity"])
 plt.boxplot(groups)
+plt.xticks(
+    # fault_type의 개수 체크
+    range(1, len(fault_types) + 1),
+    # 결함 종류
+    fault_types,
+    rotation=45,
+)
+plt.title("Fault Type별 Sum_of_Luminosity 분포")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Sum_of_Luminosity")
+plt.show()  # 결과물 보여주기 (boxplot)
+
+
+# ===================================================
+# 05. 데이터 분석 - 철판 두께와 결함 유형 사이의 관계
+# ===================================================
+
+# 각 그룹의 Steel_Plate_Thickness(철판 두께와 결함 유형 사이의 관계) 평균 계산
+thick_a_avg = df.groupby("fault_type")["Steel_Plate_Thickness"].mean()
+# x축 결함 종류들의 배치 순서 조정
+thick_a_avg = thick_a_avg.reindex(fault_cnts.index)
+
+# 타입별 정보 불러오기 (개수, 평균, 중앙값 등등) - Steel_Plate_Thickness
+thick_a_decrib = df.groupby("fault_type")["Steel_Plate_Thickness"].describe()
+
+# Steel_Plate_Thickness의 bar graph
+# => (가로축: 결함 종류(fault_type), 세로축: 각 결함 평균(Steel_Plate_Thickness))
+plt.bar(thick_a_avg.index, thick_a_avg.values)
+
+plt.title("Steel_Plate_Thickness (철판 두께와 결함 유형 사이의 관계)")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("AVG of SPT (각 결함 평균)")
+
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()  # 결과물 보여주기 (bar - 그래프)
+
+# Steel_Plate_Thickness의 boxplot
+groups = []  # 리스트 초기화
+
+for fault in fault_types:
+    # print(fault)
+    groups.append(df[df["fault_type"] == fault]["Steel_Plate_Thickness"])
+plt.boxplot(groups)
+plt.xticks(
+    # fault_type의 개수 체크
+    range(1, len(fault_types) + 1),
+    # 결함 종류
+    fault_types,
+    rotation=45,
+)
+plt.title("Fault Type별 Steel_Plate_Thickness 분포")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Steel_Plate_Thickness")
 plt.show()  # 결과물 보여주기 (boxplot)
