@@ -126,6 +126,11 @@ fault_summary.to_csv("../data/fault_summary.csv", index=False, encoding="utf-8-s
 # ===================================================
 
 # 그래프를 위한 bar 생성
+# 목적: 결함 종류별 "얼마나 많이 발생했는가?"
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
 # => (가로축: 결함 종류(fault_type), 세로축: 발생 건수(count))
 plt.bar(fault_cnts.index, fault_summary["count"])
 
@@ -152,6 +157,7 @@ pxl_a_decrib = df.groupby("fault_type")["Pixels_Areas"].describe()
 # ===================================================
 
 # 'Box Plot'으로 평균값에 큰 영향을 주는 이상값의 분포를 알아내기 위한 시각화 자료
+# 목적: 결함 종류별 "데이터가 어떻게 분포하는가?"
 # 결함 데이터 묶기 (group 리스트 생성)
 
 # 데이터 담는 빈 리스트
@@ -159,6 +165,9 @@ groups = []
 
 # 결함 종류 (모든 Box Plot에 적용)
 fault_types = fault_cnts.index
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
 
 for fault in fault_types:
     # print(fault)
@@ -187,6 +196,9 @@ sol_a_avg = sol_a_avg.reindex(fault_cnts.index)
 
 # 타입별 정보 불러오기 (개수, 평균, 중앙값 등등) - Sum_of_Luminosity
 sol_a_decrib = df.groupby("fault_type")["Sum_of_Luminosity"].describe()
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
 
 # Sum_of_Luminosity의 bar graph
 # => (가로축: 결함 종류(fault_type), 세로축: 각 결함 평균 (Sum_of_Luminosity))
@@ -234,6 +246,9 @@ thick_a_avg = thick_a_avg.reindex(fault_cnts.index)
 # 타입별 정보 불러오기 (개수, 평균, 중앙값 등등) - Steel_Plate_Thickness
 thick_a_decrib = df.groupby("fault_type")["Steel_Plate_Thickness"].describe()
 
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
 # Steel_Plate_Thickness의 bar graph
 # => (가로축: 결함 종류(fault_type), 세로축: 각 결함 평균(Steel_Plate_Thickness))
 plt.bar(thick_a_avg.index, thick_a_avg.values)
@@ -265,3 +280,76 @@ plt.title("Fault Type별 Steel_Plate_Thickness 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Steel_Plate_Thickness")
 plt.show()  # 결과물 보여주기 (boxplot)
+
+# ===================================================
+# 06. 결함 데이터의 시각화 - Scatter Plot
+# ===================================================
+# 목적: 두 변수 사이에 "관계가 있는가?"
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(18, 15))
+
+# 결함 별 색깔 표현하기
+# 색 지정 딕셔너리 colors
+colors = {
+    "Other_Faults": "red",
+    "Bumps": "blue",
+    "K_Scatch": "green",
+    "Z_Scratch": "orange",
+    "Pastry": "purple",
+    "Stains": "brown",
+    "Dirtiness": "black",
+}
+for fault in fault_types:
+    fault_data = df[df["fault_type"] == fault]
+    # 결함 면적과 밝기의 상관 관계를 시각화하기
+    plt.scatter(
+        fault_data["Pixels_Areas"],
+        fault_data["Sum_of_Luminosity"],
+        color=colors[fault],
+        alpha=0.5,
+        label=fault,
+    )
+
+plt.legend()  # 범례 설정
+plt.show()
+
+# 이상치 추적
+# print(df[df["fault_type"] == "K_Scatch"]["Pixels_Areas"].max())
+
+
+# ===================================================
+# 07. 두 데이터의 상관관계 확인
+# ===================================================
+# print(df["Pixels_Areas"].corr(df["Sum_of_Luminosity"]).round(2))  # 0.98
+
+# K-Scatch의 'Pixels_Areas-Sum_of_Luminosity' 상관 관계
+# kscatch = df[df["fault_type"] == "K_Scatch"]
+# print(kscatch["Pixels_Areas"].corr(kscatch["Sum_of_Luminosity"]).round(2))  # 0.97
+
+# K-Scatch 포함 'Pixels_Areas-Sum_of_Luminosity' 상관 관계
+for fault in fault_types:
+    # 결함 유형 데이터 담기
+    fault_data = df[df["fault_type"] == fault]
+    # 상관관계
+    correlation = fault_data["Pixels_Areas"].corr(fault_data["Sum_of_Luminosity"])
+
+    # print(f"{fault}: {correlation:.4f}")
+
+# 여러 숫자 데이터의 상관관계를 한꺼번에 계산
+# => 숫자형 열들만 골라서 계산 (numeric_only=True)
+corr = df.corr(numeric_only=True)
+
+# 라이브러리 호출 (Seaborn)
+import seaborn as sns
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(18, 15))
+
+# 상관관계 히트맵 사용
+# => 상관계수 숫자를 그래프 안에 표시 (annot=True)
+# => 히트맵 내부 숫자 사이즈 조정 (annot_kws={"size": 8})
+sns.heatmap(corr, annot=True, annot_kws={"size": 8})
+
+# 만들어진 히트맵 호출
+plt.show()
