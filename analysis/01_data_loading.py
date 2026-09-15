@@ -141,7 +141,7 @@ plt.ylabel("Count (결함 개수)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # fault_type별로 그룹을 만들어서 각 그룹의 Pixels_Areas(결함 면적) 평균 계산
 # => pd.groupby(): 특정 기준 데이터를 그룹으로 묶어서 다음 그룹별(특정 열의 데이터들) 계산을 수행
@@ -183,7 +183,7 @@ plt.xticks(
 plt.title("Fault Type별 Pixels_Areas 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Pixels_Areas")
-plt.show()  # 결과물 보여주기 (boxplot)
+# plt.show()  # 결과물 보여주기 (boxplot)
 
 # ===================================================
 # 04. 데이터 분석 - 철판 결함 유형별 밝기 특성 확인
@@ -211,7 +211,7 @@ plt.ylabel("AVG of SoL (각 결함 평균)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 
 # Sum_of_Luminosity의 boxplot
@@ -231,7 +231,7 @@ plt.xticks(
 plt.title("Fault Type별 Sum_of_Luminosity 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Sum_of_Luminosity")
-plt.show()  # 결과물 보여주기 (boxplot)
+# plt.show()  # 결과물 보여주기 (boxplot)
 
 
 # ===================================================
@@ -260,7 +260,7 @@ plt.ylabel("AVG of SPT (각 결함 평균)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # Steel_Plate_Thickness의 boxplot
 groups = []  # 리스트 초기화
@@ -279,7 +279,7 @@ plt.xticks(
 plt.title("Fault Type별 Steel_Plate_Thickness 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Steel_Plate_Thickness")
-plt.show()  # 결과물 보여주기 (boxplot)
+# plt.show()  # 결과물 보여주기 (boxplot)
 
 # ===================================================
 # 06. 결함 데이터의 시각화 - Scatter Plot
@@ -312,7 +312,7 @@ for fault in fault_types:
     )
 
 plt.legend()  # 범례 설정
-plt.show()
+# plt.show()
 
 # 이상치 추적
 # print(df[df["fault_type"] == "K_Scatch"]["Pixels_Areas"].max())
@@ -338,7 +338,7 @@ for fault in fault_types:
 
 # 여러 숫자 데이터의 상관관계를 한꺼번에 계산
 # => 숫자형 열들만 골라서 계산 (numeric_only=True)
-corr = df.corr(numeric_only=True)
+corr = df.corr(numeric_only=True).round(3)
 
 # 라이브러리 호출 (Seaborn)
 import seaborn as sns
@@ -352,4 +352,60 @@ plt.figure(figsize=(18, 15))
 sns.heatmap(corr, annot=True, annot_kws={"size": 8})
 
 # 만들어진 히트맵 호출
+# plt.show()
+
+# 상관관계 파악
+# print(corr)
+
+# 강한 상관관계 파악 (1)
+# plt.figure(figsize=(8, 6))
+# plt.scatter(df["X_Minimum"], df["X_Maximum"], alpha=0.5)
+# plt.title("X_Minimum vs X_Maximum")
+# plt.xlabel("X_Minimum")
+# plt.ylabel("X_Maximum")
+# plt.show()
+
+# 강한 상관관계 파악 (2)
+# plt.figure(figsize=(8, 6))
+# plt.scatter(df["Y_Minimum"], df["Y_Maximum"], alpha=0.5)
+# plt.title("Y_Minimum vs Y_Maximum")
+# plt.xlabel("Y_Minimum")
+# plt.ylabel("Y_Maximum")
+# plt.show()
+
+# 선택한 두 변수의 실제 값 차이 확인 (1)
+# y_diff = df["Y_Maximum"] - df["Y_Minimum"]
+# print(y_diff.describe())
+# print()
+# # 이상값 분석용
+# print(df.loc[y_diff.idxmax()])
+# print()
+# => Y_Maximum - Y_Minimum에서 최대 18,141의 극단적인 값이 확인되었으며,
+# 해당 데이터는 K_Scatch 유형으로 확인되었다.
+# 또한 Pixels_Areas와 Y_Perimeter 역시 전체 데이터에서 최대값을 나타내어,
+# 해당 관측치는 실제로 매우 큰 결함 영역을 가진 사례일 가능성을 확인하였다.
+
+# 선택한 두 변수의 실제 값 차이 확인 (2)
+# x_diff = df["X_Maximum"] - df["X_Minimum"]
+# print(x_diff.describe())
+# print()
+# # 이상값 분석용
+# print(df.loc[x_diff.idxmax()])
+
+# Steel_Plate_Thickness와 결함 유형의 관계 분석
+print(thick_a_avg.round(2))
+
+# Steel_Plate_Thickness의 boxplot
+groups = []  # 리스트 초기화
+
+for fault in fault_types:
+    # print(fault)
+    groups.append(df[df["fault_type"] == fault]["Steel_Plate_Thickness"])
+plt.figure(figsize=(10, 6))
+plt.boxplot(groups, tick_labels=fault_types)
+plt.title("Fault Type별 Steel_Plate_Thickness 분포")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Steel_Plate_Thickness")
+
+plt.tight_layout()
 plt.show()
