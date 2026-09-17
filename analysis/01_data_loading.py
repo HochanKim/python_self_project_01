@@ -393,7 +393,7 @@ sns.heatmap(corr, annot=True, annot_kws={"size": 8})
 # print(df.loc[x_diff.idxmax()])
 
 # Steel_Plate_Thickness와 결함 유형의 관계 분석
-print(thick_a_avg.round(2))
+# print(thick_a_avg.round(2))
 
 # Steel_Plate_Thickness의 boxplot
 groups = []  # 리스트 초기화
@@ -408,4 +408,82 @@ plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Steel_Plate_Thickness")
 
 plt.tight_layout()
-plt.show()
+# plt.show()
+
+# ===================================================
+# 08. 철판 두께 파악
+# ===================================================
+# 목적: 데이터 속 철판 두께들을 파악하고 분류 작업 (편의상 프로젝트 내부 분류: 얇은 / 중간 / 두꺼운)
+# print(df["Steel_Plate_Thickness"].describe())
+# print()
+
+# 실제 철판 두께 종류 확인
+# => .value_counts().sort_index(): 집계된 데이터 개수를 오름차순으로 정렬하는 메서드가 'sort_index()'
+thick_data_cnt = df["Steel_Plate_Thickness"].value_counts().sort_index()
+# print(thick_data_cnt)
+
+"""
+두 데이터로 확인할 수 있는 점
+    1) 두께 40의 철판이 가장 많다 (전체 1941개 중 710개, 약 36.6% 비율)
+       => 40: 710개, 70: 380개, 100: 154개, 80: 150개, ...
+    2) 두께 최소값(min)과 25% 기준값이 동일한 40 => 36.6% 비율의 두께 40 철판의 점유도
+
+"""
+
+# pd.cut()으로 데이터 분류하기
+df["Thickness_Group"] = pd.cut(
+    df["Steel_Plate_Thickness"],
+    # 기준점 설정 (두께 39 / 60 / 100 / 300)
+    # 39 < 값 ≤ 60       → Thin
+    # 60 < 값 ≤ 100      → Medium
+    # 100 < 값 ≤ 300     → Thick
+    bins=[39, 60, 100, 300],
+    # 두께 명칭 설정
+    labels=["Thin", "Medium", "Thick"],
+)
+
+
+# 분류 결과 확인
+# print(df[["Steel_Plate_Thickness", "Thickness_Group"]].head(20))
+# print()
+
+# 각 그룹의 데이터 개수 확인
+# print(df["Thickness_Group"].value_counts())
+# Thin       912  ← 약 47.0%
+# Medium     750  ← 약 38.6%
+# Thick      279  ← 약 14.4%
+
+"""
+분석 편의를 위해 데이터 분포를 기준으로 Steel_Plate_Thickness를 
+Thin, Medium, Thick의 세 구간으로 분류하였다.
+"""
+
+
+# 각 철판 두께 그룹에서 어떤 결함들이 몇 개씩 발생했는가?
+# pd.crosstab() => 두 범주형 데이터를 교차해서 표를 만들어주는 기능
+thickness_fault = pd.crosstab(df["Thickness_Group"], df["fault_type"])
+# print(thickness_fault)
+
+# ※ groupby()와 차이점은?
+# => groupby()는 '각 결함의 평균 두께가 얼마야?'
+# ==> crosstab()는 '각 두께 그룹에 각각 결함이 몇 개야?'
+
+# crosstab() 데이터 비율 만들기
+thickness_fault_ratio = (
+    # normalize="index": 각 행(row)의 합이 1이 되도록 행 기준 비율을 구합니다. ("각 행의 합계를 100%로 만들어라.")
+    pd.crosstab(df["Thickness_Group"], df["fault_type"], normalize="index") * 100
+)
+# print(f"{thickness_fault_ratio.round(2)}")
+
+"""
+본 데이터에서 철판 두께 구간에 따라 결함 유형의 구성 비율에 뚜렷한 차이가 관찰되었다. 
+Thin 그룹에서는 K_Scatch가 42.76%로 가장 높은 비율을 보인 반면, Medium에서는 0.13%, 
+Thick에서는 관측되지 않았다. 
+
+반대로 Other_Faults는 Thin 24.78%, Medium 34.53%, Thick 67.38%로 
+두꺼운 그룹에서 높은 구성 비율을 보였다.
+"""
+
+# ===================================================
+# 09. 철판 두께 분류 데이터 시각화 하기
+# ===================================================
