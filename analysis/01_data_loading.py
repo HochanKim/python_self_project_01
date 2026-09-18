@@ -141,7 +141,7 @@ plt.ylabel("Count (결함 개수)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-# plt.show()  # 결과물 보여주기 (bar - 그래프)
+plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # fault_type별로 그룹을 만들어서 각 그룹의 Pixels_Areas(결함 면적) 평균 계산
 # => pd.groupby(): 특정 기준 데이터를 그룹으로 묶어서 다음 그룹별(특정 열의 데이터들) 계산을 수행
@@ -166,6 +166,7 @@ groups = []
 # 결함 종류 (모든 Box Plot에 적용)
 fault_types = fault_cnts.index
 
+
 # 시각화 자료 크기 조정
 plt.figure(figsize=(10, 6))
 
@@ -183,7 +184,7 @@ plt.xticks(
 plt.title("Fault Type별 Pixels_Areas 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Pixels_Areas")
-# plt.show()  # 결과물 보여주기 (boxplot)
+plt.show()  # 결과물 보여주기 (boxplot)
 
 # ===================================================
 # 04. 데이터 분석 - 철판 결함 유형별 밝기 특성 확인
@@ -196,6 +197,7 @@ sol_a_avg = sol_a_avg.reindex(fault_cnts.index)
 
 # 타입별 정보 불러오기 (개수, 평균, 중앙값 등등) - Sum_of_Luminosity
 sol_a_decrib = df.groupby("fault_type")["Sum_of_Luminosity"].describe()
+
 
 # 시각화 자료 크기 조정
 plt.figure(figsize=(10, 6))
@@ -211,11 +213,12 @@ plt.ylabel("AVG of SoL (각 결함 평균)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-# plt.show()  # 결과물 보여주기 (bar - 그래프)
+plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 
 # Sum_of_Luminosity의 boxplot
 groups = []  # 리스트 초기화
+
 
 for fault in fault_types:
     # print(fault)
@@ -231,7 +234,7 @@ plt.xticks(
 plt.title("Fault Type별 Sum_of_Luminosity 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Sum_of_Luminosity")
-# plt.show()  # 결과물 보여주기 (boxplot)
+plt.show()  # 결과물 보여주기 (boxplot)
 
 
 # ===================================================
@@ -245,6 +248,7 @@ thick_a_avg = thick_a_avg.reindex(fault_cnts.index)
 
 # 타입별 정보 불러오기 (개수, 평균, 중앙값 등등) - Steel_Plate_Thickness
 thick_a_decrib = df.groupby("fault_type")["Steel_Plate_Thickness"].describe()
+
 
 # 시각화 자료 크기 조정
 plt.figure(figsize=(10, 6))
@@ -260,7 +264,7 @@ plt.ylabel("AVG of SPT (각 결함 평균)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-# plt.show()  # 결과물 보여주기 (bar - 그래프)
+plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # Steel_Plate_Thickness의 boxplot
 groups = []  # 리스트 초기화
@@ -279,12 +283,13 @@ plt.xticks(
 plt.title("Fault Type별 Steel_Plate_Thickness 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Steel_Plate_Thickness")
-# plt.show()  # 결과물 보여주기 (boxplot)
+plt.show()  # 결과물 보여주기 (boxplot)
 
 # ===================================================
 # 06. 결함 데이터의 시각화 - Scatter Plot
 # ===================================================
 # 목적: 두 변수 사이에 "관계가 있는가?"
+
 
 # 시각화 자료 크기 조정
 plt.figure(figsize=(18, 15))
@@ -312,7 +317,7 @@ for fault in fault_types:
     )
 
 plt.legend()  # 범례 설정
-# plt.show()
+plt.show()
 
 # 이상치 추적
 # print(df[df["fault_type"] == "K_Scatch"]["Pixels_Areas"].max())
@@ -343,6 +348,7 @@ corr = df.corr(numeric_only=True).round(3)
 # 라이브러리 호출 (Seaborn)
 import seaborn as sns
 
+
 # 시각화 자료 크기 조정
 plt.figure(figsize=(18, 15))
 
@@ -352,7 +358,7 @@ plt.figure(figsize=(18, 15))
 sns.heatmap(corr, annot=True, annot_kws={"size": 8})
 
 # 만들어진 히트맵 호출
-# plt.show()
+plt.show()
 
 # 상관관계 파악
 # print(corr)
@@ -398,6 +404,7 @@ sns.heatmap(corr, annot=True, annot_kws={"size": 8})
 # Steel_Plate_Thickness의 boxplot
 groups = []  # 리스트 초기화
 
+
 for fault in fault_types:
     # print(fault)
     groups.append(df[df["fault_type"] == fault]["Steel_Plate_Thickness"])
@@ -408,7 +415,7 @@ plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Steel_Plate_Thickness")
 
 plt.tight_layout()
-# plt.show()
+plt.show()
 
 # ===================================================
 # 08. 철판 두께 파악
@@ -485,5 +492,74 @@ Thick에서는 관측되지 않았다.
 """
 
 # ===================================================
-# 09. 철판 두께 분류 데이터 시각화 하기
+# 09. 철판 두께 그룹별 결함 비율 데이터 시각화 하기
 # ===================================================
+
+
+# 두께 그룹별 결함 비율 - 누적 막대그래프
+# 그래프 기본 설정
+ax = thickness_fault_ratio.plot(kind="bar", stacked=True, figsize=(10, 6))
+# DataFrame.plot()의 역할은?
+# => Pandas가 내부적으로 Matplotlib를 이용해서 자체적으로 그래프를 제작
+# => kind="bar": Bar plot으로 제작 요청 / stacked=True: 여러 막대를 하나 위에 쌓기
+
+
+# 막대별 숫자로 비율 표시
+for container in ax.containers:
+    for bar in container:
+        # 해당 색깔 영역의 높이
+        value = bar.get_height()
+
+        # 0%는 표시하지 않음
+        if value == 0:
+            continue
+
+        # 막대의 가운데 X 위치
+        x = bar.get_x() + bar.get_width() / 2
+
+        # 막대가 시작되는 Y 위치
+        y = bar.get_y()
+
+        # 5% 이상은 막대 내부에 숫자 표시
+        if value >= 3:
+            ax.text(
+                x, y + value / 2, f"{value:.2f} %", ha="center", va="center", fontsize=9
+            )
+        else:
+            # 5% 미만은 막대 바깥쪽으로 표시
+            ax.annotate(
+                f"{value:.2f} %",
+                # 선을 어디에서 시작할 것인가?
+                xy=(x, y + value),
+                # 숫자를 어디에 놓을 것인가?
+                xytext=(x + 0.12, y + value + 4),
+                ha="center",
+                fontsize=8,
+                arrowprops={"arrowstyle": "-", "color": "gray", "linewidth": 0.8},
+            )
+
+
+ax.set_title("Fault Distribution by Steel Plate Thickness")
+ax.set_xlabel("Thickness Group")
+ax.set_ylabel("Fault Ratio (%)")
+
+ax.legend(title="Fault Type", bbox_to_anchor=(1.02, 1), loc="upper left")
+
+plt.xticks(rotation=0)
+
+plt.tight_layout()
+plt.show()
+# => 본 데이터에서 정의한 철판 두께 구간에 따라 결함 유형의 구성 비율에 뚜렷한 차이가 관찰되었다.
+
+# 특정 결함을 선정해서 막대 그래프로 구현
+# selected_faults = thickness_fault_ratio[["K_Scatch", "Other_Faults", "Z_Scratch"]]
+# ax2 = selected_faults.plot(kind="bar", stacked=False, figsize=(10, 6))
+
+# ax2.set_title("Fault Distribution by Steel Plate Thickness")
+# ax2.set_xlabel("Thickness Group")
+# ax2.set_ylabel("Fault Ratio (%)")
+
+# plt.xticks(rotation=0)
+
+# plt.tight_layout()
+# plt.show()
