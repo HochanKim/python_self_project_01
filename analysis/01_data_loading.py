@@ -307,7 +307,7 @@ colors = {
 }
 for fault in fault_types:
     fault_data = df[df["fault_type"] == fault]
-    # 결함 면적과 밝기의 상관 관계를 시각화하기
+    # 결함 면적과 밝기의 상관관계를 시각화하기
     plt.scatter(
         fault_data["Pixels_Areas"],
         fault_data["Sum_of_Luminosity"],
@@ -326,11 +326,19 @@ plt.show()
 # ===================================================
 # 07. 두 데이터의 상관관계 확인
 # ===================================================
-# print(df["Pixels_Areas"].corr(df["Sum_of_Luminosity"]).round(2))  # 0.98
+# Pixels_Areas
+# → '결함이 얼마나 큰가?'
+# → 결함 영역의 픽셀 수
+
+# Sum_of_Luminosity
+# → '결함 영역의 픽셀 밝기를 모두 합하면 얼마인가?'
+# → 결함 영역의 밝기 총합
+
+# print(df["Pixels_Areas"].corr(df["Sum_of_Luminosity"]).round(2))  # 약 0.98
 
 # K-Scatch의 'Pixels_Areas-Sum_of_Luminosity' 상관 관계
 # kscatch = df[df["fault_type"] == "K_Scatch"]
-# print(kscatch["Pixels_Areas"].corr(kscatch["Sum_of_Luminosity"]).round(2))  # 0.97
+# print(kscatch["Pixels_Areas"].corr(kscatch["Sum_of_Luminosity"]).round(2))  # 약 0.97
 
 # K-Scatch 포함 'Pixels_Areas-Sum_of_Luminosity' 상관 관계
 for fault in fault_types:
@@ -495,7 +503,6 @@ Thick에서는 관측되지 않았다.
 # 09. 철판 두께 그룹별 결함 비율 데이터 시각화 하기
 # ===================================================
 
-
 # 두께 그룹별 결함 비율 - 누적 막대그래프
 # 그래프 기본 설정
 ax = thickness_fault_ratio.plot(kind="bar", stacked=True, figsize=(10, 6))
@@ -563,3 +570,137 @@ plt.show()
 
 # plt.tight_layout()
 # plt.show()
+
+
+# ===================================================
+# 10. 철판 결함 영역의 밝기 데이터들의 특성은?
+# ===================================================
+# 목적: 결함 크기의 영향을 많이 받는 밝기 총합이 아니라, 결함 유형별 밝기 특성에서도 차이가 나타나는가?
+
+# 전체 Luminosity_Index 분포 확인
+# print(df["Luminosity_Index"].describe())
+# count    1941.000000
+# mean       -0.131305
+# std         0.148767
+# min        -0.998900
+# 25%        -0.195000
+# 50%        -0.133000
+# 75%        -0.066600
+# max         0.642100
+
+# 평균값과 중앙값이 거의 비슷
+# 최솟값과 최대값이 중앙값에 멀리 떨어짐 => 이상값 여부 체크
+# 표준편차와 최소-중앙-최대 값들의 범위를 보면 대부분의 데이터가 좁은 구간에 모여 있지만
+# 양쪽에 멀리 떨어진 값들이 존재함을 알 수 있음
+
+# 결함 종류 별 Luminosity_Index 평균치 계산
+luminosity_avg = df.groupby("fault_type")["Luminosity_Index"].mean()
+# print(luminosity_avg.round(2))
+# fault_type
+# Bumps          -0.15
+# Dirtiness      -0.09
+# K_Scatch       -0.10
+# Other_Faults   -0.12
+# Pastry         -0.19
+# Stains         -0.01
+# Z_Scratch      -0.19
+
+# 결함 종류 별 Luminosity_Index 값 분포 파악
+luminosity_describe = df.groupby("fault_type")["Luminosity_Index"].describe()
+# print(luminosity_describe.round(3))
+#               count   mean    std    min    25%    50%    75%    max
+# fault_type
+# Bumps         402.0 -0.150  0.093 -0.597 -0.204 -0.143 -0.100  0.121
+# Dirtiness      55.0 -0.092  0.072 -0.273 -0.130 -0.088 -0.061  0.140
+# K_Scatch      391.0 -0.102  0.172 -0.999 -0.188 -0.156 -0.084  0.592
+# Other_Faults  673.0 -0.123  0.167 -0.885 -0.203 -0.119 -0.038  0.642
+# Pastry        158.0 -0.185  0.118 -0.582 -0.236 -0.179 -0.120  0.279
+# Stains         72.0 -0.014  0.046 -0.207 -0.024 -0.003  0.009  0.062
+# Z_Scratch     190.0 -0.191  0.140 -0.610 -0.242 -0.165 -0.098  0.016
+
+# Stains는 표본 수가 72개로 상대적으로 적지만, 평균뿐 아니라 중앙값도 0에 가깝고
+#   25~75% 범위와 표준편차도 작아 Luminosity_Index가 0 부근에 비교적 밀집된 분포를 보인다.
+
+# K_Scatch와 Other_Faults는 표준편차(std)가 각각 0.172, 0.167로 다른 결함 유형들보다 크다,
+#   Luminosity_Index 값이 상대적으로 넓게 퍼져있음
+
+
+# ===================================================
+# 11. 철판 결함 영역의 밝기 데이터들의 시각화 - Bar, Box plot 등
+# ===================================================
+
+# Bar plot - 7개 결함별 Luminosity_Index 평균
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
+# Luminosity_Index 평균 bar graph
+# => (가로축: 결함 종류(fault_type), 세로축: Luminosity_Index 평균
+luminosity_avg = luminosity_avg.reindex(fault_types)
+plt.bar(luminosity_avg.index, luminosity_avg.values)
+
+plt.title("Luminosity_Index 평균")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("AVG of LI (각 Luminosity_Index 평균)")
+
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()  # 결과물 보여주기 (bar - 그래프)
+
+
+# Box plot - 7개 결함별 Luminosity_Index 분포
+# 시각화 자료 크기 조정
+
+# Steel_Plate_Thickness의 boxplot
+groups = []  # 리스트 초기화
+
+for fault in fault_types:
+    # print(fault)
+    groups.append(df[df["fault_type"] == fault]["Luminosity_Index"])
+plt.figure(figsize=(10, 6))
+plt.boxplot(groups, tick_labels=fault_types)
+plt.title("Fault Type별 Luminosity_Index 분포")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Luminosity_Index")
+
+plt.tight_layout()
+plt.show()
+
+
+# ===================================================
+# 11. 두 열의 데이터 상관관계 분석 - Sum_of_Luminosity와 Luminosity_Index
+# ===================================================
+# Sum_of_Luminosity와 Luminosity_Index의 상관관계 확인
+lum_corr = df["Sum_of_Luminosity"].corr(df["Luminosity_Index"])
+print(lum_corr.round(2))  # 약 -0.01
+
+# Scatter Plot으로 데이터 시각화
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
+# 결함 별 색깔 표현하기
+# 색 지정 딕셔너리 colors
+colors = {
+    "Other_Faults": "red",
+    "Bumps": "blue",
+    "K_Scatch": "green",
+    "Z_Scratch": "orange",
+    "Pastry": "purple",
+    "Stains": "brown",
+    "Dirtiness": "black",
+}
+
+
+plt.scatter(
+    fault_data["Sum_of_Luminosity"],
+    fault_data["Luminosity_Index"],
+    color=colors[fault],
+    alpha=0.5,
+)
+
+plt.title("Sum_of_Luminosity와 Luminosity_Index의 상관관계")
+plt.xlabel("Sum_of_Luminosity")
+plt.ylabel("Luminosity_Index")
+
+plt.tight_layout()
+plt.show()
