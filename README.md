@@ -70,6 +70,13 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - 100% Stacked Bar Chart 및 Grouped Bar Chart를 이용하여 결과 시각화
 
 ### 06-08. 결함 밝기 특성 심화 분석
+- Sum_of_Luminosity
+  → 결함 영역과 관련된 luminosity 합계 변수
+- Luminosity_Index
+  → 결함의 luminosity와 관련된 연속형 지표
+    (UCI에서 상세 계산식은 제공하지 않음)
+- 두 데이터 영역은 결함의 '밝기'를 다루지만 상관관계는 -0.01로 
+비슷한 이름과는 다르게 같은 방향의 상관관계가 이루어지지 않는다 (Scatter plot으로 확인)
 
 ### 06-09. 결함 형태 및 방향 특성 분석
 

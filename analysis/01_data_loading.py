@@ -219,10 +219,13 @@ plt.show()  # 결과물 보여주기 (bar - 그래프)
 # Sum_of_Luminosity의 boxplot
 groups = []  # 리스트 초기화
 
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
 
 for fault in fault_types:
     # print(fault)
     groups.append(df[df["fault_type"] == fault]["Sum_of_Luminosity"])
+
 plt.boxplot(groups)
 plt.xticks(
     # fault_type의 개수 체크
@@ -268,6 +271,9 @@ plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # Steel_Plate_Thickness의 boxplot
 groups = []  # 리스트 초기화
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
 
 for fault in fault_types:
     # print(fault)
@@ -409,21 +415,6 @@ plt.show()
 # Steel_Plate_Thickness와 결함 유형의 관계 분석
 # print(thick_a_avg.round(2))
 
-# Steel_Plate_Thickness의 boxplot
-groups = []  # 리스트 초기화
-
-
-for fault in fault_types:
-    # print(fault)
-    groups.append(df[df["fault_type"] == fault]["Steel_Plate_Thickness"])
-plt.figure(figsize=(10, 6))
-plt.boxplot(groups, tick_labels=fault_types)
-plt.title("Fault Type별 Steel_Plate_Thickness 분포")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("Steel_Plate_Thickness")
-
-plt.tight_layout()
-plt.show()
 
 # ===================================================
 # 08. 철판 두께 파악
@@ -628,6 +619,11 @@ luminosity_describe = df.groupby("fault_type")["Luminosity_Index"].describe()
 # ===================================================
 # 11. 철판 결함 영역의 밝기 데이터들의 시각화 - Bar, Box plot 등
 # ===================================================
+# Luminosity_Index
+# - UCI 원본 데이터에서는 연속형(Continuous) 변수로 제공됨
+# - 그러나 구체적인 계산식과 값의 물리적 의미는 명시되어 있지 않음
+# - 따라서 음수/양수 값을 직접적으로 '어둡다/밝다'라고 단정하지 않고
+#   결함 유형별 값의 분포와 변수 간 관계를 중심으로 분석
 
 # Bar plot - 7개 결함별 Luminosity_Index 평균
 # 시각화 자료 크기 조정
@@ -649,15 +645,17 @@ plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 
 # Box plot - 7개 결함별 Luminosity_Index 분포
-# 시각화 자료 크기 조정
 
 # Steel_Plate_Thickness의 boxplot
 groups = []  # 리스트 초기화
 
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
 for fault in fault_types:
     # print(fault)
     groups.append(df[df["fault_type"] == fault]["Luminosity_Index"])
-plt.figure(figsize=(10, 6))
+
 plt.boxplot(groups, tick_labels=fault_types)
 plt.title("Fault Type별 Luminosity_Index 분포")
 plt.xlabel("Fault Type (결함 종류)")
@@ -672,29 +670,16 @@ plt.show()
 # ===================================================
 # Sum_of_Luminosity와 Luminosity_Index의 상관관계 확인
 lum_corr = df["Sum_of_Luminosity"].corr(df["Luminosity_Index"])
-print(lum_corr.round(2))  # 약 -0.01
+# print(lum_corr.round(2))  # 약 -0.01
 
 # Scatter Plot으로 데이터 시각화
 # 시각화 자료 크기 조정
 plt.figure(figsize=(10, 6))
 
-# 결함 별 색깔 표현하기
-# 색 지정 딕셔너리 colors
-colors = {
-    "Other_Faults": "red",
-    "Bumps": "blue",
-    "K_Scatch": "green",
-    "Z_Scratch": "orange",
-    "Pastry": "purple",
-    "Stains": "brown",
-    "Dirtiness": "black",
-}
-
-
+# Scatter로 데이터 분포도 보기
 plt.scatter(
-    fault_data["Sum_of_Luminosity"],
-    fault_data["Luminosity_Index"],
-    color=colors[fault],
+    df["Sum_of_Luminosity"],
+    df["Luminosity_Index"],
     alpha=0.5,
 )
 
@@ -704,3 +689,149 @@ plt.ylabel("Luminosity_Index")
 
 plt.tight_layout()
 plt.show()
+# => 둘의 상관관계는 -0.01이므로 거의 0에 가깝다, 즉 둘의 선형관계가 거의 없다
+# => 'Sum_of_Luminosity'와 'Luminosity_Index'는 밝기를 다루지만
+#     동일한 '밝기 변수'로 취급하기에는 매우 곤란하고 서로 다른 특성을 나타내는 지표로 볼 필요가 있다
+
+# ===================================================
+# 12. 결함 형태 및 방향 특성 분석 - Edges 등
+# ===================================================
+
+# 결함 형태 데이터열
+shape_columns = ["Edges_Index", "Edges_X_Index", "Edges_Y_Index", "Orientation_Index"]
+
+# 형태 관련 변수의 전체 분포 확인
+# print(df[shape_columns].describe().round(3))
+#        Edges_Index  Edges_X_Index  Edges_Y_Index  Orientation_Index
+# count     1941.000       1941.000       1941.000           1941.000
+# mean         0.332          0.611          0.813              0.083
+# std          0.300          0.243          0.234              0.501
+# min          0.000          0.014          0.048             -0.991
+# 25%          0.060          0.412          0.597             -0.333
+# 50%          0.227          0.636          0.947              0.095
+# 75%          0.574          0.800          1.000              0.512
+# max          0.995          1.000          1.000              0.992
+
+# 결함 유형별 형태/방향 관련 변수의 평균
+shape_columns_avg = df.groupby("fault_type")[shape_columns].mean()
+
+# 기존 결함 순서로 통일
+shape_columns_avg = shape_columns_avg.reindex(fault_cnts.index)
+
+# print(shape_columns_avg.round(3))
+#               Edges_Index  Edges_X_Index  Edges_Y_Index  Orientation_Index
+# fault_type
+# Other_Faults        0.372          0.636          0.834              0.113
+# Bumps               0.468          0.699          0.919              0.097
+# K_Scatch            0.130          0.552          0.527             -0.300
+# Z_Scratch           0.193          0.506          0.876              0.262
+# Pastry              0.302          0.511          0.994              0.637
+# Stains              0.585          0.895          0.928             -0.265
+# Dirtiness           0.513          0.353          0.946              0.595
+
+
+# 7개 결함과 "Orientation_Index"의 데이터 평균 bar graph
+o_i_avg = shape_columns_avg["Orientation_Index"]
+# => (가로축: 결함 종류(fault_type), 세로축: Orientation_Index 평균
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
+plt.bar(o_i_avg.index, o_i_avg.values)
+
+plt.title("Fault Type별 Orientation_Index 평균")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("AVG of Orientation_Index")
+
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()  # 결과물 보여주기 (bar - 그래프)
+
+
+# Box plot - 7개 결함과 "Orientation_Index"의 데이터 분포 집중 분석
+
+groups = []  # 리스트 초기화
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
+for fault in fault_types:
+    # print(fault)
+    groups.append(df[df["fault_type"] == fault]["Orientation_Index"])
+
+plt.boxplot(groups, tick_labels=fault_types)
+plt.title("Fault Type별 Orientation_Index 데이터 분포")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Orientation_Index")
+
+plt.tight_layout()
+plt.show()
+
+# Orientation_Index 분석 결과
+# => 결함 유형에 따라 Orientation_Index 평균과 분포에 차이가 나타남
+# => K_Scatch와 Stains는 평균이 음수 영역에 위치
+# => Pastry와 Dirtiness는 상대적으로 높은 양수 평균을 보임
+# => Box Plot에서도 K_Scatch/Stains와 Pastry/Dirtiness의
+#    데이터 중심 위치가 서로 다른 것을 확인
+# => Other_Faults와 Z_Scratch는 비교적 넓은 범위에 분포
+#
+# 주의:
+# UCI 원본에서 Orientation_Index의 구체적인 계산식/물리적 의미가
+# 제공되지 않는 경우 양수/음수를 특정 방향으로 단정하지 않고
+# 결함 유형별 분포 차이를 중심으로 해석
+
+
+# 7개 결함과 "Edges_Y_Index"의 데이터 평균 bar graph
+e_y_i_avg = shape_columns_avg["Edges_Y_Index"]
+# => (가로축: 결함 종류(fault_type), 세로축: Edges_Y_Index 평균
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
+plt.bar(e_y_i_avg.index, e_y_i_avg.values)
+
+plt.title("Fault Type별 Edges_Y_Index 평균")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("AVG of Edges_Y_Index")
+
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()  # 결과물 보여주기 (bar - 그래프)
+
+
+# Box plot - 7개 결함과 "Edges_Y_Index"의 데이터 분포 집중 분석
+
+groups = []  # 리스트 초기화
+
+# 시각화 자료 크기 조정
+plt.figure(figsize=(10, 6))
+
+for fault in fault_types:
+    # print(fault)
+    groups.append(df[df["fault_type"] == fault]["Edges_Y_Index"])
+
+plt.boxplot(groups, tick_labels=fault_types)
+plt.title("Fault Type별 Edges_Y_Index 데이터 분포")
+plt.xlabel("Fault Type (결함 종류)")
+plt.ylabel("Edges_Y_Index")
+
+plt.tight_layout()
+plt.show()
+
+# Edges_Y_Index 분석 결과
+# => 대부분의 결함 유형은 Edges_Y_Index 평균이 높은 편이지만
+#    K_Scatch는 약 0.527로 다른 결함 유형보다 낮은 평균을 보임
+#
+# => Box Plot에서도 K_Scatch의 중앙값과 주요 데이터 분포가
+#    다른 결함 유형보다 낮은 위치에 있어 평균값만의 현상이 아님을 확인
+#
+# => Pastry는 평균이 약 0.994이며 중앙값 역시 1에 매우 가까워
+#    대부분의 데이터가 높은 값에 집중되어 있음
+#
+# => Dirtiness 역시 대부분 높은 값에 집중되어 있지만
+#    일부 낮은 이상값이 존재함
+#
+# => Bumps는 평균과 중앙값은 높은 편이지만
+#    낮은 영역에 많은 이상값이 존재하는 것이 확인됨
+#
+# => Other_Faults와 Z_Scratch는 상대적으로 넓은 범위의 분포를 보임
