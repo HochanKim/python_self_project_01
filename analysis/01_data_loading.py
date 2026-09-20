@@ -141,7 +141,7 @@ plt.ylabel("Count (결함 개수)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # fault_type별로 그룹을 만들어서 각 그룹의 Pixels_Areas(결함 면적) 평균 계산
 # => pd.groupby(): 특정 기준 데이터를 그룹으로 묶어서 다음 그룹별(특정 열의 데이터들) 계산을 수행
@@ -184,7 +184,7 @@ plt.xticks(
 plt.title("Fault Type별 Pixels_Areas 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Pixels_Areas")
-plt.show()  # 결과물 보여주기 (boxplot)
+# plt.show()  # 결과물 보여주기 (boxplot)
 
 # ===================================================
 # 04. 데이터 분석 - 철판 결함 유형별 밝기 특성 확인
@@ -213,7 +213,7 @@ plt.ylabel("AVG of SoL (각 결함 평균)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 
 # Sum_of_Luminosity의 boxplot
@@ -237,7 +237,7 @@ plt.xticks(
 plt.title("Fault Type별 Sum_of_Luminosity 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Sum_of_Luminosity")
-plt.show()  # 결과물 보여주기 (boxplot)
+# plt.show()  # 결과물 보여주기 (boxplot)
 
 
 # ===================================================
@@ -267,7 +267,7 @@ plt.ylabel("AVG of SPT (각 결함 평균)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 # Steel_Plate_Thickness의 boxplot
 groups = []  # 리스트 초기화
@@ -289,7 +289,7 @@ plt.xticks(
 plt.title("Fault Type별 Steel_Plate_Thickness 분포")
 plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Steel_Plate_Thickness")
-plt.show()  # 결과물 보여주기 (boxplot)
+# plt.show()  # 결과물 보여주기 (boxplot)
 
 # ===================================================
 # 06. 결함 데이터의 시각화 - Scatter Plot
@@ -323,7 +323,7 @@ for fault in fault_types:
     )
 
 plt.legend()  # 범례 설정
-plt.show()
+# plt.show()
 
 # 이상치 추적
 # print(df[df["fault_type"] == "K_Scatch"]["Pixels_Areas"].max())
@@ -372,7 +372,7 @@ plt.figure(figsize=(18, 15))
 sns.heatmap(corr, annot=True, annot_kws={"size": 8})
 
 # 만들어진 히트맵 호출
-plt.show()
+# plt.show()
 
 # 상관관계 파악
 # print(corr)
@@ -383,7 +383,7 @@ plt.show()
 # plt.title("X_Minimum vs X_Maximum")
 # plt.xlabel("X_Minimum")
 # plt.ylabel("X_Maximum")
-# plt.show()
+# # plt.show()
 
 # 강한 상관관계 파악 (2)
 # plt.figure(figsize=(8, 6))
@@ -391,7 +391,7 @@ plt.show()
 # plt.title("Y_Minimum vs Y_Maximum")
 # plt.xlabel("Y_Minimum")
 # plt.ylabel("Y_Maximum")
-# plt.show()
+# # plt.show()
 
 # 선택한 두 변수의 실제 값 차이 확인 (1)
 # y_diff = df["Y_Maximum"] - df["Y_Minimum"]
@@ -454,7 +454,7 @@ df["Thickness_Group"] = pd.cut(
 # print()
 
 # 각 그룹의 데이터 개수 확인
-# print(df["Thickness_Group"].value_counts())
+# print(df["Thickness_Group"].value_counts()) ↓ 출력 결과
 # Thin       912  ← 약 47.0%
 # Medium     750  ← 약 38.6%
 # Thick      279  ← 약 14.4%
@@ -546,7 +546,7 @@ ax.legend(title="Fault Type", bbox_to_anchor=(1.02, 1), loc="upper left")
 plt.xticks(rotation=0)
 
 plt.tight_layout()
-plt.show()
+# plt.show()
 # => 본 데이터에서 정의한 철판 두께 구간에 따라 결함 유형의 구성 비율에 뚜렷한 차이가 관찰되었다.
 
 # 특정 결함을 선정해서 막대 그래프로 구현
@@ -560,7 +560,7 @@ plt.show()
 # plt.xticks(rotation=0)
 
 # plt.tight_layout()
-# plt.show()
+# # plt.show()
 
 
 # ===================================================
@@ -569,7 +569,7 @@ plt.show()
 # 목적: 결함 크기의 영향을 많이 받는 밝기 총합이 아니라, 결함 유형별 밝기 특성에서도 차이가 나타나는가?
 
 # 전체 Luminosity_Index 분포 확인
-# print(df["Luminosity_Index"].describe())
+# print(df["Luminosity_Index"].describe()) ↓ 출력 결과
 # count    1941.000000
 # mean       -0.131305
 # std         0.148767
@@ -598,7 +598,8 @@ luminosity_avg = df.groupby("fault_type")["Luminosity_Index"].mean()
 
 # 결함 종류 별 Luminosity_Index 값 분포 파악
 luminosity_describe = df.groupby("fault_type")["Luminosity_Index"].describe()
-# print(luminosity_describe.round(3))
+
+# print(luminosity_describe.round(3)) ↓ 출력 결과
 #               count   mean    std    min    25%    50%    75%    max
 # fault_type
 # Bumps         402.0 -0.150  0.093 -0.597 -0.204 -0.143 -0.100  0.121
@@ -641,7 +642,7 @@ plt.ylabel("AVG of LI (각 Luminosity_Index 평균)")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 
 # Box plot - 7개 결함별 Luminosity_Index 분포
@@ -662,7 +663,7 @@ plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Luminosity_Index")
 
 plt.tight_layout()
-plt.show()
+# plt.show()
 
 
 # ===================================================
@@ -688,7 +689,7 @@ plt.xlabel("Sum_of_Luminosity")
 plt.ylabel("Luminosity_Index")
 
 plt.tight_layout()
-plt.show()
+# plt.show()
 # => 둘의 상관관계는 -0.01이므로 거의 0에 가깝다, 즉 둘의 선형관계가 거의 없다
 # => 'Sum_of_Luminosity'와 'Luminosity_Index'는 밝기를 다루지만
 #     동일한 '밝기 변수'로 취급하기에는 매우 곤란하고 서로 다른 특성을 나타내는 지표로 볼 필요가 있다
@@ -701,7 +702,7 @@ plt.show()
 shape_columns = ["Edges_Index", "Edges_X_Index", "Edges_Y_Index", "Orientation_Index"]
 
 # 형태 관련 변수의 전체 분포 확인
-# print(df[shape_columns].describe().round(3))
+# print(df[shape_columns].describe().round(3)) ↓ 출력 결과
 #        Edges_Index  Edges_X_Index  Edges_Y_Index  Orientation_Index
 # count     1941.000       1941.000       1941.000           1941.000
 # mean         0.332          0.611          0.813              0.083
@@ -718,7 +719,7 @@ shape_columns_avg = df.groupby("fault_type")[shape_columns].mean()
 # 기존 결함 순서로 통일
 shape_columns_avg = shape_columns_avg.reindex(fault_cnts.index)
 
-# print(shape_columns_avg.round(3))
+# print(shape_columns_avg.round(3)) ↓ 출력 결과
 #               Edges_Index  Edges_X_Index  Edges_Y_Index  Orientation_Index
 # fault_type
 # Other_Faults        0.372          0.636          0.834              0.113
@@ -733,6 +734,7 @@ shape_columns_avg = shape_columns_avg.reindex(fault_cnts.index)
 # 7개 결함과 "Orientation_Index"의 데이터 평균 bar graph
 o_i_avg = shape_columns_avg["Orientation_Index"]
 # => (가로축: 결함 종류(fault_type), 세로축: Orientation_Index 평균
+
 # 시각화 자료 크기 조정
 plt.figure(figsize=(10, 6))
 
@@ -745,11 +747,10 @@ plt.ylabel("AVG of Orientation_Index")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 
 # Box plot - 7개 결함과 "Orientation_Index"의 데이터 분포 집중 분석
-
 groups = []  # 리스트 초기화
 
 # 시각화 자료 크기 조정
@@ -765,7 +766,7 @@ plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Orientation_Index")
 
 plt.tight_layout()
-plt.show()
+# plt.show()
 
 # Orientation_Index 분석 결과
 # => 결함 유형에 따라 Orientation_Index 평균과 분포에 차이가 나타남
@@ -784,6 +785,7 @@ plt.show()
 # 7개 결함과 "Edges_Y_Index"의 데이터 평균 bar graph
 e_y_i_avg = shape_columns_avg["Edges_Y_Index"]
 # => (가로축: 결함 종류(fault_type), 세로축: Edges_Y_Index 평균
+
 # 시각화 자료 크기 조정
 plt.figure(figsize=(10, 6))
 
@@ -796,7 +798,7 @@ plt.ylabel("AVG of Edges_Y_Index")
 plt.xticks(rotation=45)
 
 plt.tight_layout()
-plt.show()  # 결과물 보여주기 (bar - 그래프)
+# plt.show()  # 결과물 보여주기 (bar - 그래프)
 
 
 # Box plot - 7개 결함과 "Edges_Y_Index"의 데이터 분포 집중 분석
@@ -816,7 +818,7 @@ plt.xlabel("Fault Type (결함 종류)")
 plt.ylabel("Edges_Y_Index")
 
 plt.tight_layout()
-plt.show()
+# plt.show()
 
 # Edges_Y_Index 분석 결과
 # => 대부분의 결함 유형은 Edges_Y_Index 평균이 높은 편이지만
@@ -835,3 +837,31 @@ plt.show()
 #    낮은 영역에 많은 이상값이 존재하는 것이 확인됨
 #
 # => Other_Faults와 Z_Scratch는 상대적으로 넓은 범위의 분포를 보임
+
+# ===================================================
+# 13. 결함 형태 및 방향 특성 분석 - Edges 등
+# ===================================================
+
+
+# ===================================================
+# ★ 분석 데이터들 엑셀 내보내기
+# ===================================================
+
+import os
+
+# 현재 Python 파일의 위치를 기준으로 reports 폴더 경로 생성
+REPORTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "reports")
+
+# Excel 파일 경로
+REPORT_FILE = os.path.join(REPORTS, "Steel_Plate_Fault_Analysis.xlsx")
+
+# ExcelWriter를 이용하여 분석 결과를 각각의 Sheet에 저장
+with pd.ExcelWriter(REPORT_FILE, engine="openpyxl") as w:
+    # 최종 결함별 결과 보고서
+    # fault_summary.to_excel(w, sheet_name="01_Summary", index=False)
+
+    # 결함별 발생 건수 및 비율
+    fault_summary.to_excel(w, sheet_name="02_Fault_Count")
+
+    # 결함별 Pixels_Areas 기술통계
+    pxl_a_decrib.to_excel(w, sheet_name="03_Pixels_Areas")
