@@ -58,112 +58,96 @@ plt.show()
 
 
 # ===================================================
-# 03. 결함 유형별 Pixels_Areas 분포 - Box Plot
+# 03.  - Box Plot
 # ===================================================
 
-groups = []
 
-for fault in fault_types:
-    groups.append(df[df["fault_type"] == fault]["Pixels_Areas"])
+# Box Plot을 함수에 담아서 구현
+def draw_fault_boxplot(column, title):
+    groups = []
 
-plt.figure(figsize=(10, 6))
+    for fault in fault_types:
+        groups.append(df[df["fault_type"] == fault][column])
 
-plt.boxplot(groups, tick_labels=fault_types)
+    plt.figure(figsize=(10, 6))
 
-plt.title("Fault Type별 Pixels_Areas 분포")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("Pixels_Areas")
+    plt.boxplot(groups, tick_labels=fault_types)
 
-plt.xticks(rotation=45)
+    plt.title(title)
+    plt.xlabel("Fault Type (결함 종류)")
+    plt.ylabel(column)
 
-plt.tight_layout()
-plt.show()
+    plt.xticks(rotation=45)
 
-
-# ===================================================
-# 04. 결함 유형별 Sum_of_Luminosity 평균 - Bar Plot
-# ===================================================
-
-plt.figure(figsize=(10, 6))
-
-plt.bar(sol_a_avg.index, sol_a_avg.values)
-
-plt.title("Sum_of_Luminosity (철판 결함 유형별 밝기)")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("AVG of SoL (각 결함 평균)")
-
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
+    plt.tight_layout()
+    plt.show()
 
 
-# ===================================================
-# 05. 결함 유형별 Sum_of_Luminosity 분포 - Box Plot
-# ===================================================
+# 결함 유형별 Pixels_Areas 분포
+draw_fault_boxplot("Pixels_Areas", "Fault Type별 Pixels_Areas 분포")
 
-groups = []
+# 결함 유형별 Sum_of_Luminosity 분포
+draw_fault_boxplot("Sum_of_Luminosity", "Fault Type별 Sum_of_Luminosity 분포")
 
-for fault in fault_types:
-    groups.append(df[df["fault_type"] == fault]["Sum_of_Luminosity"])
+# 결함 유형별 Steel_Plate_Thickness 분포
+draw_fault_boxplot("Steel_Plate_Thickness", "Fault Type별 Steel_Plate_Thickness 분포")
 
-plt.figure(figsize=(10, 6))
+# 결함 유형별 Luminosity_Index 분포
+draw_fault_boxplot("Luminosity_Index", "Fault Type별 Luminosity_Index 분포")
 
-plt.boxplot(groups, tick_labels=fault_types)
+# 결함 유형별 Orientation_Index 분포
+draw_fault_boxplot("Orientation_Index", "Fault Type별 Orientation_Index 분포")
 
-plt.title("Fault Type별 Sum_of_Luminosity 분포")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("Sum_of_Luminosity")
-
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
+# 결함 유형별 Edges_Y_Index 분포
+draw_fault_boxplot("Edges_Y_Index", "Fault Type별 Edges_Y_Index 분포")
 
 
 # ===================================================
-# 06. 결함 유형별 Steel_Plate_Thickness 평균 - Bar Plot
+# 04. Bar Plot
 # ===================================================
 
-plt.figure(figsize=(10, 6))
 
-plt.bar(thick_a_avg.index, thick_a_avg.values)
+# Bar Plot을 함수에 담아서 구현
+def draw_fault_barplot(data, title, ylabel):
+    data = data.reindex(fault_types)
+    plt.figure(figsize=(10, 6))
 
-plt.title("Steel_Plate_Thickness (철판 두께와 결함 유형 사이의 관계)")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("AVG of SPT (각 결함 평균)")
+    plt.bar(data.index, data.values)
 
-plt.xticks(rotation=45)
+    plt.title(title)
+    plt.xlabel("Fault Type (결함 종류)")
+    plt.ylabel(ylabel)
 
-plt.tight_layout()
-plt.show()
+    plt.xticks(rotation=45)
+
+    plt.tight_layout()
+    plt.show()
+
+
+# 결함 유형별 Sum_of_Luminosity 평균
+draw_fault_barplot(
+    sol_a_avg,
+    "Sum_of_Luminosity (철판 결함 유형별 밝기)",
+    "AVG of SoL (각 결함 평균)",
+)
+
+# 결함 유형별 Steel_Plate_Thickness 평균
+draw_fault_barplot(
+    thick_a_avg,
+    "Steel_Plate_Thickness (철판 두께와 결함 유형 사이의 관계)",
+    "AVG of SPT (각 결함 평균)",
+)
+
+# 결함 유형별 Luminosity_Index 평균
+draw_fault_barplot(
+    luminosity_avg,
+    "Fault Type별 Luminosity_Index 평균",
+    "AVG of Luminosity_Index",
+)
 
 
 # ===================================================
-# 07. 결함 유형별 Steel_Plate_Thickness 분포 - Box Plot
-# ===================================================
-
-groups = []
-
-for fault in fault_types:
-    groups.append(df[df["fault_type"] == fault]["Steel_Plate_Thickness"])
-
-plt.figure(figsize=(10, 6))
-
-plt.boxplot(groups, tick_labels=fault_types)
-
-plt.title("Fault Type별 Steel_Plate_Thickness 분포")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("Steel_Plate_Thickness")
-
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
-
-
-# ===================================================
-# 08. Pixels_Areas와 Sum_of_Luminosity 관계
+# 05. Pixels_Areas와 Sum_of_Luminosity 관계
 #     - Scatter Plot
 # ===================================================
 
@@ -202,7 +186,7 @@ plt.show()
 
 
 # ===================================================
-# 09. 전체 숫자형 변수 상관관계 - Heatmap
+# 06. 전체 숫자형 변수 상관관계 - Heatmap
 # ===================================================
 
 plt.figure(figsize=(18, 15))
@@ -216,7 +200,7 @@ plt.show()
 
 
 # ===================================================
-# 10. 철판 두께 그룹별 결함 비율
+# 07. 철판 두께 그룹별 결함 비율
 #     - 누적 Bar Plot
 # ===================================================
 
@@ -269,7 +253,7 @@ plt.show()
 
 
 # ===================================================
-# 11. 주요 결함 3종과 철판 두께 그룹 비교 - Bar Plot
+# 08. 주요 결함 3종과 철판 두께 그룹 비교 - Bar Plot
 # ===================================================
 
 selected_faults = thickness_fault_ratio[["K_Scatch", "Other_Faults", "Z_Scratch"]]
@@ -288,51 +272,7 @@ plt.show()
 
 
 # ===================================================
-# 12. 결함 유형별 Luminosity_Index 평균 - Bar Plot
-# ===================================================
-
-# 결함 유형 순서를 기존 그래프와 통일
-luminosity_avg = luminosity_avg.reindex(fault_types)
-
-plt.figure(figsize=(10, 6))
-
-plt.bar(luminosity_avg.index, luminosity_avg.values)
-
-plt.title("Fault Type별 Luminosity_Index 평균")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("AVG of Luminosity_Index")
-
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
-
-
-# ===================================================
-# 13. 결함 유형별 Luminosity_Index 분포 - Box Plot
-# ===================================================
-
-groups = []
-
-for fault in fault_types:
-    groups.append(df[df["fault_type"] == fault]["Luminosity_Index"])
-
-plt.figure(figsize=(10, 6))
-
-plt.boxplot(groups, tick_labels=fault_types)
-
-plt.title("Fault Type별 Luminosity_Index 분포")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("Luminosity_Index")
-
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
-
-
-# ===================================================
-# 14. Sum_of_Luminosity와 Luminosity_Index 관계
+# 09. Sum_of_Luminosity와 Luminosity_Index 관계
 #     - Scatter Plot
 # ===================================================
 
@@ -354,7 +294,7 @@ plt.show()
 
 
 # ===================================================
-# 15. 결함 유형별 Orientation_Index 평균 - Bar Plot
+# 10. 결함 유형별 Orientation_Index 평균 - Bar Plot
 # ===================================================
 
 orientation_avg = shape_columns_avg["Orientation_Index"]
@@ -374,30 +314,7 @@ plt.show()
 
 
 # ===================================================
-# 16. 결함 유형별 Orientation_Index 분포 - Box Plot
-# ===================================================
-
-groups = []
-
-for fault in fault_types:
-    groups.append(df[df["fault_type"] == fault]["Orientation_Index"])
-
-plt.figure(figsize=(10, 6))
-
-plt.boxplot(groups, tick_labels=fault_types)
-
-plt.title("Fault Type별 Orientation_Index 데이터 분포")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("Orientation_Index")
-
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
-
-
-# ===================================================
-# 17. 결함 유형별 Edges_Y_Index 평균 - Bar Plot
+# 11. 결함 유형별 Edges_Y_Index 평균 - Bar Plot
 # ===================================================
 
 edges_y_avg = shape_columns_avg["Edges_Y_Index"]
@@ -414,30 +331,3 @@ plt.xticks(rotation=45)
 
 plt.tight_layout()
 plt.show()
-
-
-# ===================================================
-# 18. 결함 유형별 Edges_Y_Index 분포 - Box Plot
-# ===================================================
-
-groups = []
-
-for fault in fault_types:
-    groups.append(df[df["fault_type"] == fault]["Edges_Y_Index"])
-
-plt.figure(figsize=(10, 6))
-
-plt.boxplot(groups, tick_labels=fault_types)
-
-plt.title("Fault Type별 Edges_Y_Index 데이터 분포")
-plt.xlabel("Fault Type (결함 종류)")
-plt.ylabel("Edges_Y_Index")
-
-plt.xticks(rotation=45)
-
-plt.tight_layout()
-plt.show()
-
-
-def draw_boxplot():
-    return True
