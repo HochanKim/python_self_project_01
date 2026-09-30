@@ -65,20 +65,19 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - Seaborn Heatmap을 이용한 전체 변수 간 상관관계 시각화
 - `Pixels_Areas`와 `Sum_of_Luminosity` 사이에서 높은 양의 상관관계 확인
 
+### 06-05. 상관관계가 높은 X/Y 좌표 변수 분석
+- `X_Minimum ↔ X_Maximum`, `Y_Minimum ↔ Y_Maximum`의 높은 상관관계 확인
+- 최소/최대 좌표의 차이를 계산하여 결함의 가로-세로 범위 확인
+- 최대 차이를 갖는 데이터의 실제 행을 추적하여 이상값 분석
+
 ![변수 간 상관관계](images/05_Heatmap_자료.png)
 
-### 06-05. 주요 변수 Scatter Plot
+### 06-06. 주요 변수 Scatter Plot
 - `Pixels_Areas`와 `Sum_of_Luminosity`의 관계 시각화
 - 결함 유형별 색상을 구분하여 분포 비교
 - 결함 유형별 상관계수 추가 확인
 
 ![주요 변수 상관계수](images/04_Scatter%20Plot_그래프.png)
-
-### 06-06. 상관관계가 높은 X/Y 좌표 변수 분석
-- `X_Minimum ↔ X_Maximum`, `Y_Minimum ↔ Y_Maximum`의 높은 상관관계 확인
-- 최소/최대 좌표의 차이를 계산하여 결함의 가로-세로 범위 확인
-- 최대 차이를 갖는 데이터의 실제 행을 추적하여 이상값 분석
-
 
 ### 06-07. 철판 두께와 결함 유형 분석
 - `Steel_Plate_Thickness`의 기초 통계 및 실제 값 분포 확인
@@ -87,7 +86,7 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - 그룹별 표본 수 차이를 고려하기 위해 결함 구성 비율 계산
 - 100% Stacked Bar Chart 및 Grouped Bar Chart를 이용하여 결과 시각화
 
-![철판 두께와 결함 유형 분석](images/04_Scatter%20Plot_그래프.png)
+![철판 두께와 결함 유형 분석](images/07_철판_두께별_결함_분포_그래프_자료.png)
 
 ### 06-08. 결함 밝기 특성 심화 분석
 - Sum_of_Luminosity
