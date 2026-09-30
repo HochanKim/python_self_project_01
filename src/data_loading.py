@@ -1,20 +1,26 @@
 # 데이터 준비 단계 py 파일
 
 import pandas as pd  # pandas 가져오기 (데이터 불러오기, 계산 등)
+from pathlib import Path
+
+# 'Path'를 활용하여 최상위 경로 설정하기
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ===================================================
 # 01. 데이터 준비 및 가공
 # ===================================================
 
+DATA_DIR = BASE_DIR / "data"
+
 # 데이터 파일 불러오기
-df = pd.read_csv("../data/Faults.NNA", sep=r"\s+", header=None)
+df = pd.read_csv(DATA_DIR / "Faults.NNA", sep=r"\s+", header=None)
 # => r'\s+'는 공백이 하나 이상 있는 곳을 구분자로 사용
 # => sep=r"\s+":  탭이나 스페이스바가 여러 번 들어간 정렬되지 않은 공백 데이터도 깔끔하게 잘라주는 역할
 # => header=None: 파일의 첫 번째 줄을 헤더로 사용 금지 => 열의 헤더가 숫자로 자동 지정
 
 
 # 컬럼명 모음 불러오기
-columns = pd.read_csv("../data/Faults27x7_var", sep=r"\s+", header=None)
+columns = pd.read_csv(DATA_DIR / "Faults27x7_var", sep=r"\s+", header=None)
 
 
 # 컬럼명들을 데이터 프레임에 적용하기

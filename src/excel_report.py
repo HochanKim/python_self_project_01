@@ -27,7 +27,6 @@ from openpyxl.styles import (
     Border,
     Side,
 )  # openpyxl의 스타일 기능들 불러오기
-from openpyxl.drawing.image import Image
 
 # 현재 Python 파일의 위치를 기준으로 reports 폴더 경로 생성
 REPORTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "reports")

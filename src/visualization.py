@@ -18,13 +18,17 @@ from analysis import (
     shape_columns_avg,
 )
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+FONT_DIR = BASE_DIR / "fonts"
 
 # ===================================================
 # 01. Matplotlib 기본 설정
 # ===================================================
 
 # 폰트 파일 경로
-font_path = "../fonts/NanumGothic-Regular.ttf"
+font_path = FONT_DIR / "NanumGothic-Regular.ttf"
 
 # 폰트 파일을 Matplotlib에 등록
 fm.fontManager.addfont(font_path)
