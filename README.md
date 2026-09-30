@@ -42,6 +42,8 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - 7개 결함 유형의 발생 건수 및 비율 분석
 - Bar Plot을 이용한 결함 유형별 발생 빈도 시각화
 
+![결함 유형별 발생 현황](images/01_bar그래프_steel_plate_fault_distribution_철강결함분류.png)
+
 ### 06-02. 결함 면적 분석
 - `Pixels_Areas`를 이용하여 결함 유형별 면적의 평균 및 분포 분석
 - `groupby()`, `describe()`를 이용한 기초 통계 분석
@@ -175,8 +177,8 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
   향후에는 이번 분석에서 확인한 주요 변수들을 활용하여
   결함 유형을 예측하는 머신러닝 분류 분석으로 확장해보고자 한다.
 
-  ## * 프로젝트 구조도
-  python_self_project_01/
+## * 프로젝트 구조도
+python_self_project_01/
 │
 ├── base/
 │   └── 01_data_loading.py
@@ -186,6 +188,7 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 ├── fonts/
 │   └── NanumGothic-Regular.ttf
 ├── images/
+│   └── 분석 그래프 이미지들
 ├── reports/
 │   └── Steel_Plate_Fault_Analysis.xlsx
 │
@@ -195,4 +198,5 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 │   ├── visualization.py
 │   └── excel_report.py
 │
+├── app.py
 └── README.md

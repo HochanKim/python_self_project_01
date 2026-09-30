@@ -12,28 +12,15 @@ df = pd.read_csv("../data/Faults.NNA", sep=r"\s+", header=None)
 # => sep=r"\s+":  탭이나 스페이스바가 여러 번 들어간 정렬되지 않은 공백 데이터도 깔끔하게 잘라주는 역할
 # => header=None: 파일의 첫 번째 줄을 헤더로 사용 금지 => 열의 헤더가 숫자로 자동 지정
 
-# print(df.shape)
-# print(df.head())
-# print(df.info())
 
 # 컬럼명 모음 불러오기
 columns = pd.read_csv("../data/Faults27x7_var", sep=r"\s+", header=None)
-# print(columns.values)
-# print(columns.shape)
 
 
 # 컬럼명들을 데이터 프레임에 적용하기
 df.columns = columns.iloc[:, 0].tolist()
 # => iloc[:, 0]: '모든 행, 0번째 열'을 가져오겠다
 # => tolist(): 리스트로 변환
-
-# print(df.columns.tolist())
-# print(df.head())  # 숫자로 임시 적용한 열 헤더가 컬럼명으로 정상적으로 변경
-# print(df.shape) # 행열 확인
-# print(df.dtypes)  # 각각 열들의 자료형 확인
-# print(df.isnull().sum())  # 결측치 확인
-# print(df.duplicated().sum())  # 중복값 확인
-# print(df.describe())  # 데이터값의 대략적인 분포
 
 ## 제조, 조제품 검사, 표면 상태 점검(결함/결함 유형 분류) 등에서 사용되는 용어들
 # => 뒷부분 컬럼명의 헤더
