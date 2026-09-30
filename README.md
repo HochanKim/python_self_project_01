@@ -201,12 +201,13 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
   결함 유형을 예측하는 머신러닝 분류 분석으로 확장해보고자 한다.
 
 ## * 프로젝트 구조도
+```text
 python_self_project_01/
 │
 ├── base/
 │   └── 01_data_loading.py
 ├── data/
-│   └── Faults.NNA
+│   ├── Faults.NNA
 │   └── Faults27x7_var
 ├── fonts/
 │   └── NanumGothic-Regular.ttf
@@ -223,3 +224,4 @@ python_self_project_01/
 │
 ├── app.py
 └── README.md
+```
