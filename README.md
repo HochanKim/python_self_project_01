@@ -49,25 +49,36 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - `groupby()`, `describe()`를 이용한 기초 통계 분석
 - Box Plot을 통한 중앙값, 분포 및 이상값 확인
 
+![결함 면적 분석](images/01_box_plot_steel_plate_fault_distribution_철강결함분류.png)
+
 ### 06-03. 밝기 분석
 - `Sum_of_Luminosity`를 이용한 결함 유형별 밝기 특성 분석 
 (결함 영역에 포함된 픽셀들의 밝기값을 모두 더한 값)
 - Bar Plot / Box Plot을 통한 결함 유형별 비교
+
+![결함 유형별 밝기 분석 - Bar](images/02_bar그래프_Sum_of_Luminosity_철판%20결함%20유형별%20밝기.png)
+
+![결함 유형별 밝기 분석 - Box](images/02_box_plot_Sum_of_Luminosity_결함밝기분류.png)
 
 ### 06-04. 변수 간 상관관계
 - 숫자형 변수의 상관계수 계산
 - Seaborn Heatmap을 이용한 전체 변수 간 상관관계 시각화
 - `Pixels_Areas`와 `Sum_of_Luminosity` 사이에서 높은 양의 상관관계 확인
 
+![변수 간 상관관계](images/05_Heatmap_자료.png)
+
 ### 06-05. 주요 변수 Scatter Plot
 - `Pixels_Areas`와 `Sum_of_Luminosity`의 관계 시각화
 - 결함 유형별 색상을 구분하여 분포 비교
 - 결함 유형별 상관계수 추가 확인
 
+![주요 변수 상관계수](images/04_Scatter%20Plot_그래프.png)
+
 ### 06-06. 상관관계가 높은 X/Y 좌표 변수 분석
 - `X_Minimum ↔ X_Maximum`, `Y_Minimum ↔ Y_Maximum`의 높은 상관관계 확인
 - 최소/최대 좌표의 차이를 계산하여 결함의 가로-세로 범위 확인
 - 최대 차이를 갖는 데이터의 실제 행을 추적하여 이상값 분석
+
 
 ### 06-07. 철판 두께와 결함 유형 분석
 - `Steel_Plate_Thickness`의 기초 통계 및 실제 값 분포 확인
@@ -75,6 +86,8 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - `pd.crosstab()`을 이용하여 두께 그룹과 결함 유형 교차분석
 - 그룹별 표본 수 차이를 고려하기 위해 결함 구성 비율 계산
 - 100% Stacked Bar Chart 및 Grouped Bar Chart를 이용하여 결과 시각화
+
+![철판 두께와 결함 유형 분석](images/04_Scatter%20Plot_그래프.png)
 
 ### 06-08. 결함 밝기 특성 심화 분석
 - Sum_of_Luminosity
@@ -85,6 +98,10 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - 두 데이터 영역은 모두 luminosity와 관련된 지표이지만 상관계수는 약 -0.01로 나타나, 
   두 변수 사이의 선형관계가 거의 나타나지 않음을 Scatter Plot을 통해 추가로 확인
 
+![결함 밝기 평균](images/08_결함_유형별_밝기_평균_그래프_자료.png)
+
+![결함 밝기값 분포도](images/09_결함_유형별_밝기값_분포도.png)
+
 ### 06-09. 결함 형태 및 방향 특성 분석
 - `Edges_Index`, `Edges_X_Index`, `Edges_Y_Index`, `Orientation_Index`의 전체 분포 확인
 - `groupby()`를 이용하여 결함 유형별 형태/방향 변수의 평균 비교
@@ -93,6 +110,13 @@ Pandas 기반 전처리와 교차분석 및 Matplotlib/Seaborn 시각화를 통�
 - UCI 원본에서 일부 지표의 구체적인 물리적 의미가 명시되지 않은 점을 고려하여,
   값의 방향을 임의로 해석하지 않고 결함 유형별 상대적인 차이와 분포를 중심으로 분석
 
+![결함 형태 및 방향 특성 분석 01](images/11_결함_유형별_O_Index_평균.png)
+
+![결함 형태 및 방향 특성 분석 02](images/12_결함_유형별_O_Index_데이터_분포.png)
+
+![결함 형태 및 방향 특성 분석 03](images/13_결함_유형별_E_Y_Index_평균.png)
+
+![결함 형태 및 방향 특성 분석 04](images/14_결함_유형별_E_Y_Index_데이터_분포.png)
 
 ## 07. 주요 분석 결과
 
