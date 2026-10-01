@@ -60,7 +60,7 @@ with pd.ExcelWriter(REPORT_FILE, engine="openpyxl") as w:
     header_rows["03_Pixels_Areas"] = [1]
 
     # 결함별 밝기 분석
-    # startrow: 엑셀 저장 위치 지정 (startrow=0 -> 0번째 행부터 데이터 넣기)
+    ## startrow: 엑셀 저장 위치 지정 (startrow=0 -> 0번째 행부터 데이터 넣기)
     startrow_1 = 0
     startrow_2 = next_startrow(startrow_1, sol_a_decrib)
 
@@ -99,7 +99,7 @@ for sheet in wb.sheetnames:
     ws = wb[sheet]
 
     # 숫자 표시 형식
-    # ws.iter_rows(): 행/셀 순회
+    ## ws.iter_rows(): 행/셀 순회
     for row in ws.iter_rows():
         for cell in row:
             if isinstance(cell.value, float):
