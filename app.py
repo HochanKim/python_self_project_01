@@ -101,9 +101,32 @@ selected_columns = st.selectbox(
     options=analysis_columns,
 )
 
+
 # ===================================================
 # 06. 선택 데이터 분포 시각화
 # ===================================================
+
+# 결함 통계를 담을 객체들
+col1, col2, col3, col4 = st.columns(4)
+
+# 사용자가 선택한 분석 변수
+selected_values = selected_data[selected_columns]
+
+# 통계값 계산
+mean_value = round(selected_values.mean(), 2)
+median_value = selected_values.median()
+minimum_value = selected_values.min()
+maximum_value = f"{selected_values.max():,}"
+
+with col1:
+    st.metric(label="평균", value=mean_value)
+with col2:
+    st.metric(label="중앙값", value=median_value)
+with col3:
+    st.metric(label="최솟값", value=minimum_value)
+with col4:
+    st.metric(label="최댓값", value=maximum_value)
+
 
 ### 선택한 결함의 그래프 생성
 fig, ax = plt.subplots(figsize=(10, 6))
