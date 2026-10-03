@@ -5,10 +5,10 @@ import matplotlib.font_manager as fm
 import seaborn as sns
 
 # 원본 데이터가 필요한 그래프용
-from data_loading import df, fault_cnts, fault_types
+from src.data_loading import df, fault_cnts, fault_types
 
 # 계산된 분석 결과가 필요한 그래프용
-from analysis import (
+from src.analysis import (
     fault_summary,
     sol_a_avg,
     thick_a_avg,
@@ -114,8 +114,8 @@ draw_fault_boxplot("Edges_Y_Index", "Fault Type별 Edges_Y_Index 분포")
 # Bar Plot을 함수에 담아서 구현
 def draw_fault_barplot(data, title, ylabel):
     data = data.reindex(fault_types)
-    plt.figure(figsize=(10, 6))
 
+    plt.figure(figsize=(10, 6))
     plt.bar(data.index, data.values)
 
     plt.title(title)

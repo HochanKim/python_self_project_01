@@ -6,7 +6,7 @@ import os
 import pandas as pd
 
 # 분석 결과 불러오기
-from analysis import (
+from src.analysis import (
     fault_summary,
     pxl_a_decrib,
     sol_a_decrib,

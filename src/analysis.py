@@ -3,7 +3,7 @@
 import pandas as pd
 
 # 'data_loading' 모듈에서 데이터 분석에 필요한 객체 불러오기
-from data_loading import df, fault_cnts, fault_types
+from src.data_loading import df, fault_cnts, fault_types
 
 # ===================================================
 # 02. 데이터 분석 - 철판 결함 유형별 발생 현황
@@ -13,7 +13,7 @@ from data_loading import df, fault_cnts, fault_types
 fault_ratio = (fault_cnts / len(df)) * 100
 fault_ratio = fault_ratio.round(2)
 
-# 결함 요약
+# 결함 유형별 발생 건수/비율
 fault_summary = pd.DataFrame(
     {
         "fault_type": fault_cnts.index,
