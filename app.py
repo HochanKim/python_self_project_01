@@ -122,10 +122,10 @@ ax.hist(selected_data_01[selected_columns], bins=20)
 ax.set_title(
     f"{selected_fault} - {selected_columns} Distribution"
 )  # 선택한 결함 유형의 Pixels_Areas 분포
-ax.set_xlabel(selected_columns)  # 선택한 결함의 면적 (픽셀 수)
+ax.set_xlabel(selected_columns)  # 사용자가 선택한 분석 변수
 ax.set_ylabel(
     "Count"
-)  # 각 Pixels_Areas 구간에 포함된 결함 데이터의 개수 (ex. 0~200 구간: 10개)
+)  # 선택한 분석 변수의 각 구간에 포함된 데이터 개수 (ex. 0~200 구간: 10개)
 
 st.pyplot(fig)
 
@@ -161,7 +161,13 @@ with tab2:
 
     fig_02, ax_02 = plt.subplots(figsize=(15, 9))
 
-    sns.heatmap(corr, ax=ax_02)
+    sns.heatmap(
+        corr,
+        ax=ax_02,
+        annot=True,  # 각 셀에 상관계수 표시
+        fmt=".2f",  # 소수 둘째 자리까지 표시
+        annot_kws={"size": 6},  # 셀 내부 숫자 크기
+    )
 
     ax_02.set_title("Correlation Heatmap")
 
@@ -181,8 +187,8 @@ with tab3:
     ax_03.set_xlabel("Fault Type")
     ax_03.set_ylabel("Average Value")
 
-    ax_01.tick_params(axis="x", rotation=45)
+    ax_03.tick_params(axis="x", rotation=45)
 
-    fig_01.tight_layout()
+    fig_03.tight_layout()
 
     st.pyplot(fig_03)
