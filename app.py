@@ -9,29 +9,8 @@ import seaborn as sns
 
 # 'analysis' 모듈에서 대시보드에 필요한 분석 결과 객체 불러오기
 # => 현재 파일이 최상위에 위치하므로 'src.analysis'로 표기
-from src.analysis import fault_summary, thickness_fault_ratio, corr, shape_columns_avg
+from src.analysis import thickness_fault_ratio, corr, shape_columns_avg
 
-
-# # 제목
-# st.title()
-
-# # 일반 내용 출력
-# st.write()
-
-# # 화면을 여러 열로 분할
-# st.columns()
-
-# # 핵심 수치 표시
-# st.metric()
-
-# # 데이터프레임 표시
-# st.dataframe()
-
-# # 사용자가 항목 선택
-# st.selectbox()
-
-# # Matplotlib 그래프 표시
-# st.pyplot()
 
 # ===================================================
 # 01. 대시보드 기본 설정
@@ -120,9 +99,9 @@ selected_values_01 = selected_data_01[selected_columns]
 
 # 통계값 계산
 mean_value = round(selected_values_01.mean(), 2)
-median_value = selected_values_01.median()
-minimum_value = selected_values_01.min()
-maximum_value = f"{selected_values_01.max():,}"
+median_value = round(selected_values_01.median(), 2)
+minimum_value = round(selected_values_01.min(), 2)
+maximum_value = f"{round(selected_values_01.max(), 2):,}"
 
 with col1:
     st.metric(label="평균", value=mean_value)
