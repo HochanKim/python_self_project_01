@@ -37,9 +37,3 @@ model.fit(X_train, y_train)
 
 # 학습한 이후 시험용에 모델을 적용하기
 y_pred = model.predict(X_test)
-
-print("\n예측 결과 일부:")
-print(y_pred[:10])
-
-print("\n실제 정답 일부:")
-print(y_test.iloc[:10].values)
